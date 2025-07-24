@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2 class="ml-6 text-2xl font-semibold mx-auto">Détails du Bloc #{{ block.index }}</h2>
+    <div class ="w-1/2 ml-6 p-3 bg-blue-200 border border-blue-700 rounded shadow-md mb-6">
+        <ul class="space-y-2 text-sm">
+          <li><strong>Hash :</strong> {{ block.hash }}</li>
+          <li><strong>Hash précédent :</strong> {{ block.previous_hash }}</li>
+          <li><strong>Timestamp :</strong> {{ block.timestamp }}</li>
+          <li><strong>Nonce :</strong> {{ block.nonce }}</li>
+        </ul>
+    </div>
+    <h3 class="ml-6 text-xl font-semibold mb-3">Transactions</h3>
+    {% if block.transactions %}
+      <ul class="ml-6 space-y-2 w-1/2">
+        {% for tx in block.transactions %}
+          <li class="bg-blue-200 border border-blue-700 rounded shadow-md p-3">
+            {{ tx.sender }} → {{ tx.recipient }} : {{ tx.amount }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-400 ml-6">Aucune transaction dans ce bloc.</p>
+    {% endif %}
+{% endblock %}
