@@ -28,7 +28,6 @@ def auto_mint_worker():
                 result = blockchain.mine_pending_transactions()
                 if result:
                     blockchain.save_to_file()
-                    print("Bloc miné automatiquement.")
                     last_mint_time = now
                     last_auto_mint_msg = f"Dernier bloc miné automatiquement à {time.datetime.now().strftime('%H:%M:%S')}"
         t.sleep(5)

@@ -730,5 +730,19 @@
         "previous_hash": "004744557679ce6aa7884a03d53cb3a2f6d79cec3d7acf3336d54f4cd6bf3c21",
         "nonce": 144,
         "hash": "00ec547c929c53e8d8b9d6619a0d095092f4ed4af018b10660bac1eeb7ecaa47"
+    },
+    {
+        "index": 52,
+        "timestamp": 1753827015.1481767,
+        "transactions": [
+            {
+                "sender": "System",
+                "recipient": "Miner",
+                "amount": 1
+            }
+        ],
+        "previous_hash": "00ec547c929c53e8d8b9d6619a0d095092f4ed4af018b10660bac1eeb7ecaa47",
+        "nonce": 802,
+        "hash": "00a826dbcd597545c8364de3566d67f239af14ea157dbda93145dc6fde48189b"
     }
 ]
