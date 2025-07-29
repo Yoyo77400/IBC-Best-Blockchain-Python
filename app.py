@@ -1,14 +1,41 @@
 from flask import Flask, request, render_template, redirect, url_for, flash
 import datetime as time
+import threading
+import time as t
 from lib.Blockchain import Blockchain
 
 app = Flask(__name__)
 app.secret_key = 'changeme'
 blockchain = Blockchain()
+auto_mint_enabled = False
+AUTO_MINT_INTERVAL = 10
+AUTO_MINT_MIN_TX = 1
+
+# Rules for the auto mint
+def auto_mint_worker():
+    global auto_mint_enabled
+    last_mint_time = t.time()
+    while True:
+        if auto_mint_enabled:
+            now = t.time()
+            tx_count = len(blockchain.pending_transactions)
+            if tx_count >= AUTO_MINT_MIN_TX or (now - last_mint_time) >= AUTO_MINT_INTERVAL and tx_count > 0:
+                if tx_count > 0:
+                    result = blockchain.mine_pending_transactions()
+                    if result:
+                        blockchain.save_to_file()
+                        flash("Bloc miné automatiquement.", "success")
+                    last_mint_time = now
+        t.sleep(5)
+
 
 @app.context_processor
 def inject_time():
-    return {'current_time': time.time()}
+    return {
+    'current_time': time.time(),
+    'auto_mint_enabled': auto_mint_enabled    
+}
+    
 
 @app.route('/')
 def index():
@@ -82,6 +109,19 @@ def block_detail(index):
     else:
         flash("Bloc introuvable.", "error")
         return redirect(url_for('index'))
+    
+@app.route('/auto_mint', methods=['POST'])
+def auto_mint():
+    global auto_mint_enabled
+    auto_mint_enabled = not auto_mint_enabled
+    status = "activé" if auto_mint_enabled else "désactivé"
+    flash(f"Minage automatique {status}.", "info")
+    return redirect(url_for('index'))
+
+
+
+
 
 if __name__ == '__main__':
+    threading.Thread(target=auto_mint_worker, daemon=True).start()
     app.run(debug=True)

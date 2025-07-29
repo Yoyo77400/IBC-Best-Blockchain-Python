@@ -20,7 +20,7 @@
       {% if messages %}
         <div class="space-y-3 mb-6">
           {% for category, message in messages %}
-            <div class="p-4 rounded border {{ 'border-red-500 bg-red-900' if category == 'error' else 'border-green-500 bg-green-900' }}">
+            <div class="p-4 rounded border {{ 'border-red-500 bg-red-200' if category == 'error' else 'border-green-500 bg-green-200' }}">
               {{ message }}
             </div>
           {% endfor %}
