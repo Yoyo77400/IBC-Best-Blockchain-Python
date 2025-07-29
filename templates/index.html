@@ -18,7 +18,26 @@
 
 <div class="flex flex-wrap gap-4 px-4 mb-10">
   <form method="post" action="{{ url_for('mine') }}">
-    <button class="rounded p-2 bg-gradient-to-tr from-blue-300 text-white via-blue-400 to-violet-300">Miner un bloc</button>
+          {% if auto_mint_enabled %}
+            <button class="rounded p-2 bg-gradient-to-tr from-gray-200 text-white to-gray-200" disabled>
+            Miner un bloc
+            </button>
+        {% else %}
+            <button class="rounded p-2 bg-gradient-to-tr from-blue-300 text-white via-blue-400 to-violet-300">
+            Miner un bloc
+            </button>
+        {% endif %}
+  </form>
+  <form method="post" action="{{ url_for('auto_mint') }}">
+        {% if auto_mint_enabled %}
+            <button class="rounded p-2 bg-gradient-to-tr from-red-300 text-white via-red-400 to-red-500">
+            Désactiver le minage automatique
+            </button>
+        {% else %}
+            <button class="rounded p-2 bg-gradient-to-tr from-green-300 text-white via-green-400 to-green-500">
+            Activer le minage automatique
+            </button>
+        {% endif %}
   </form>
   <form method="post" action="{{ url_for('validate_chain') }}">
     <button class="rounded p-2 bg-gradient-to-tr from-blue-300 text-white via-blue-400 to-violet-300">Vérifier la chaîne</button>

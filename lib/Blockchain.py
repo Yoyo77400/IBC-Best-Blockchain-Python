@@ -35,11 +35,13 @@ class Blockchain:
         return computed_hash
 
     def mine_pending_transactions(self):
-        if not self.pending_transactions:
-            return False
+        # if not self.pending_transactions:
+        #     return False
+        transactions_list  = self.pending_transactions
+        transactions_list.append(Transaction("System", "Miner", 1))
         last_block = self.get_last_block()
         new_block = Block(index=last_block.index + 1,
-                          transactions=self.pending_transactions,
+                          transactions=transactions_list,
                           timestamp=time(),
                           previous_hash=last_block.hash)
         new_block.hash = self.proof_of_work(new_block)
