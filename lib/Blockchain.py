@@ -59,6 +59,13 @@ class Blockchain:
                 return False
         return True
 
+    def increase_difficulty(self):
+        self.difficulty += 1
+
+    def decrease_difficulty(self):
+        if self.difficulty > 1:
+            self.difficulty -= 1
+
     def save_to_file(self):
         data = [{
             "index": block.index,

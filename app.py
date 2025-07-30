@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = 'changeme'
 blockchain = Blockchain()
 auto_mint_enabled = False
-AUTO_MINT_INTERVAL = 10
+AUTO_MINT_INTERVAL = 3
 AUTO_MINT_MIN_TX = 1
 last_auto_mint_msg = None
 
@@ -16,21 +16,26 @@ last_auto_mint_msg = None
 def auto_mint_worker():
     global auto_mint_enabled
     global last_auto_mint_msg
-    last_mint_time = 0
-    if len(blockchain.chain) > 0:
-        last_mint_time = blockchain.chain[-1].timestamp
-    else:
-        last_mint_time = t.time()
     while True:
         if auto_mint_enabled:
-            now = t.time()
-            if  (now - last_mint_time) >= AUTO_MINT_INTERVAL:
-                result = blockchain.mine_pending_transactions()
-                if result:
-                    blockchain.save_to_file()
-                    last_mint_time = now
-                    last_auto_mint_msg = f"Dernier bloc miné automatiquement à {time.datetime.now().strftime('%H:%M:%S')}"
-        t.sleep(5)
+            result = blockchain.mine_pending_transactions()
+            if result:
+                blockchain.save_to_file()
+                if len(blockchain.chain) >= 2:
+                    last_block = blockchain.chain[-1]
+                    prev_block = blockchain.chain[-2]
+                    block_interval = last_block.timestamp - prev_block.timestamp
+                else:
+                    block_interval = 0
+                if block_interval <= AUTO_MINT_INTERVAL:
+                    blockchain.increase_difficulty()
+                elif block_interval > AUTO_MINT_INTERVAL:
+                    blockchain.decrease_difficulty()
+                last_auto_mint_msg = (
+                    f"Dernier bloc miné automatiquement à {time.datetime.now().strftime('%H:%M:%S')}. "
+                    f"Intervalle: {block_interval:.1f}s. "
+                    f"La difficulté est actuellement de {blockchain.difficulty}."
+                )
 
 
 @app.context_processor
